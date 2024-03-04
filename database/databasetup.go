@@ -13,7 +13,10 @@ func DBset() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("Susscessfully connected to MYSQL")
 	return db
 }
