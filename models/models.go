@@ -5,7 +5,7 @@ type User struct {
 	Email      *string `json:"email"`
 	First_Name *string `json:"firstName"`
 	Last_Name  *string `json:"lastName"`
-	Password   *string `json:"Password"`
+	Password   *string `json:"password"`
 }
 type Image struct {
 	Url         *string `json:"imageURL"`
