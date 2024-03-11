@@ -35,3 +35,15 @@ type Comment struct {
 	LastName    *string `json:"lastName"`
 	Description *string `json:"description"`
 }
+type Product struct {
+	ProductId       *int        `json:"id"`
+	ProductName     *string     `json:"name"`
+	Rate            *float64    `json:"rate"`
+	Sold            *int        `json:"sold"`
+	CurrentPrice    *float64    `json:"currentPrice"`
+	LastPrice       *float64    `json:"lastPrice"`
+	ProductImages   []Image     `json:"productImage"`
+	ProuctTechnical []Technical `json:"productTechnical"`
+	ProductGroup    []Group     `json:"productGroup"`
+	ProductComment  []Comment   `json:"productComment"`
+}
