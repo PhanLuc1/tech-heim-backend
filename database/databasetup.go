@@ -20,3 +20,5 @@ func DBset() *sql.DB {
 	fmt.Println("Susscessfully connected to MYSQL")
 	return db
 }
+
+var Client *sql.DB = DBset()
