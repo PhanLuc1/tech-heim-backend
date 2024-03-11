@@ -11,3 +11,8 @@ type Image struct {
 	Url         *string `json:"imageURL"`
 	Description *string `json:"description"`
 }
+type Category struct {
+	Id_category   *int    `json:"idCategory"`
+	Name_category *string `json:"nameCategory"`
+	Desc_category *string `json:"descCategory"`
+}
