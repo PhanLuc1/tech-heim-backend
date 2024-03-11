@@ -1,9 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"github.com/PhanLuc1/tech-heim-backend/middleware"
+	"github.com/PhanLuc1/tech-heim-backend/routes"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("Hello Word")
+	router := gin.Default()
+	router.Use(middleware.CORSMiddleware())
+	routes.UserRoutes(router)
+	router.Run("0.0.0.0:8080")
 }
