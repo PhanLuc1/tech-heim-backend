@@ -30,3 +30,8 @@ type Group struct {
 	Title *string `json:"title"`
 	Type  []Type  `json:"productType"`
 }
+type Comment struct {
+	FirstName   *string `json:"firstName"`
+	LastName    *string `json:"lastName"`
+	Description *string `json:"description"`
+}
