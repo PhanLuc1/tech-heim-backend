@@ -7,3 +7,7 @@ type User struct {
 	Last_Name  *string `json:"lastName"`
 	Password   *string `json:"Password"`
 }
+type Image struct {
+	Url         *string `json:"imageURL"`
+	Description *string `json:"description"`
+}
