@@ -25,3 +25,8 @@ type Type struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
 }
+type Group struct {
+	Id    *int    `json:"id"`
+	Title *string `json:"title"`
+	Type  []Type  `json:"productType"`
+}
