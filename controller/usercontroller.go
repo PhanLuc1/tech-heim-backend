@@ -35,7 +35,7 @@ func Signup() gin.HandlerFunc {
 		query := "INSERT INTO user (email, firstName, lastName, password) VALUES (?, ?, ?, ?)"
 		_, err := database.Client.Query(query, user.Email, user.First_Name, user.Last_Name, user.Password)
 		if err != nil {
-			ctx.JSON(500, gin.H{"error": "Syntax SQL"})
+			ctx.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
 		ctx.JSON(201, gin.H{"message": "Your account has been created"})
