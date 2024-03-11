@@ -16,3 +16,7 @@ type Category struct {
 	Name_category *string `json:"nameCategory"`
 	Desc_category *string `json:"descCategory"`
 }
+type Technical struct {
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+}
