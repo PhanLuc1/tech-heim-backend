@@ -55,12 +55,12 @@ func GetProduct() gin.HandlerFunc {
 			var idCategory int
 			err := result.Scan(&product.ProductId, &product.ProductName, &product.Rate, &product.Sold, &product.CurrentPrice, &product.LastPrice, &idCategory)
 			if err != nil {
-				ctx.JSON(500, gin.H{"error": err})
+				ctx.JSON(500, gin.H{"error": err.Error()})
 				return
 			}
 			result1, err := database.Client.Query("SELECT productimage.url,productimage.description FROM productimage WHERE idProduct = ?", *product.ProductId)
 			if err != nil {
-				ctx.JSON(500, gin.H{"error": err})
+				ctx.JSON(500, gin.H{"error": err.Error()})
 				return
 			}
 			for result1.Next() {
