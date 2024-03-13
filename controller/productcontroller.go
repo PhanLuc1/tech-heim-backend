@@ -53,7 +53,7 @@ func GetProduct() gin.HandlerFunc {
 			var product models.Product
 			var imageProduct []models.Image
 			var idCategory int
-			err := result.Scan(&product.ProductId, &product.ProductName, &product.Rate, &product.Sold, &product.CurrentPrice, &product.LastPrice, &idCategory)
+			err := result.Scan(&product.ProductId, &product.ProductName, &product.Rate, &product.Sold, &product.Quantity, &product.CurrentPrice, &product.LastPrice, &idCategory)
 			if err != nil {
 				ctx.JSON(500, gin.H{"error": err.Error()})
 				return
