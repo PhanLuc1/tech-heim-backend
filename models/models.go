@@ -40,6 +40,7 @@ type Product struct {
 	ProductName     *string     `json:"name"`
 	Rate            *float64    `json:"rate"`
 	Sold            *int        `json:"sold"`
+	Quantity        *int        `json:"quantity"`
 	CurrentPrice    *float64    `json:"currentPrice"`
 	LastPrice       *float64    `json:"lastPrice"`
 	ProductImages   []Image     `json:"productImage"`
