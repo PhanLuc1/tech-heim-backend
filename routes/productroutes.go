@@ -6,5 +6,5 @@ import (
 )
 
 func ProductRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.GET("/product", controller.GetProduct())
+	incomingRoutes.GET("/product/", controller.GetProduct())
 }
