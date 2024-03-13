@@ -39,7 +39,6 @@ func GetTechnicalProduct(idproduct int) (productTechnical []models.Technical, er
 	}
 	return productTechnical, nil
 }
-
 func GetProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var products []models.Product
@@ -97,5 +96,76 @@ func GetProduct() gin.HandlerFunc {
 			products = append(products, product)
 		}
 		ctx.IndentedJSON(200, products)
+	}
+}
+func GetProductDetail() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		var product models.Product
+		query := "SELECT product.id,product.name,product.rate,product.quantity,product.quantity,product.currentPrice,product.lastPrice FROM product WHERE id =?"
+		err := database.Client.QueryRow(query, id).Scan(
+			&product.ProductId,
+			&product.ProductName,
+			&product.Rate,
+			&product.Sold,
+			&product.Quantity,
+			&product.CurrentPrice,
+			&product.LastPrice,
+		)
+		if err != nil {
+			ctx.JSON(500, gin.H{"Error": err.Error()})
+		}
+		product.ProductImages, _ = GetImageProduct(*product.ProductId)
+		product.ProuctTechnical, _ = GetTechnicalProduct(*product.ProductId)
+		// get Group and type product
+		var productGroups []models.Group
+		query = "SELECT DISTINCT productgroup.id,productgroup.title FROM productgroup	JOIN producttype ON producttype.idGroup = productgroup.id JOIN product_producttype ON product_producttype.idType = producttype.id JOIN product ON product_producttype.idProduct = product.id WHERE product.id = ? "
+		query += " ORDER BY productgroup.id ASC "
+		result2, err := database.Client.Query(query, *product.ProductId)
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		for result2.Next() {
+			var productGroup models.Group
+			var types []models.Type
+			result2.Scan(&productGroup.Id, &productGroup.Title)
+			result3, err := database.Client.Query("SELECT producttype.id,producttype.title,producttype.description FROM producttype JOIN product_producttype ON product_producttype.idType = producttype.id JOIN product ON product.id = product_producttype.idProduct WHERE idGroup = ? AND idProduct = ?", productGroup.Id, product.ProductId)
+			if err != nil {
+				ctx.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+			for result3.Next() {
+				var typeTemp models.Type
+				err := result3.Scan(&typeTemp.Id, &typeTemp.Title, &typeTemp.Description)
+				if err != nil {
+					ctx.JSON(200, gin.H{"Erorr": err})
+					return
+				}
+				types = append(types, typeTemp)
+			}
+
+			productGroup.Type = types
+			productGroups = append(productGroups, productGroup)
+		}
+		product.ProductGroup = productGroups
+		// get Commentproduct
+		var productComments []models.Comment
+		query = "SELECT user.firstName,user.lastName,productcomment.description FROM user JOIN productcomment ON productcomment.idUser = user.id JOIN product ON product.id = productcomment.idProduct WHERE product.id = ?"
+		result4, err := database.Client.Query(query, *product.ProductId)
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+		}
+		for result4.Next() {
+			var productComment models.Comment
+			err := result4.Scan(&productComment.FirstName, &productComment.LastName, &productComment.Description)
+			if err != nil {
+				ctx.JSON(404, gin.H{"error": err.Error()})
+			}
+			productComments = append(productComments, productComment)
+		}
+		product.ProductComment = productComments
+
+		ctx.JSON(200, product)
 	}
 }
