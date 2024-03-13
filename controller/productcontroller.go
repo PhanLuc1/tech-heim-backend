@@ -9,6 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetImageProduct(idproduct int) (imageProduct []models.Image, err error) {
+	result1, err := database.Client.Query("SELECT productimage.url,productimage.description FROM productimage WHERE idProduct = ?", idproduct)
+	if err != nil {
+		return nil, err
+	}
+	for result1.Next() {
+		var imageTemp models.Image
+		err := result1.Scan(&imageTemp.Url, &imageTemp.Description)
+		if err != nil {
+			return nil, err
+		}
+		imageProduct = append(imageProduct, imageTemp)
+	}
+	return imageProduct, nil
+}
+
 func GetProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var products []models.Product
@@ -35,6 +51,7 @@ func GetProduct() gin.HandlerFunc {
 				params = append(params, typeId)
 			}
 		}
+		
 		if sort == "ascending" {
 			query += "ORDER BY p.currentPrice ASC"
 		} else if sort == "descending" {
@@ -51,28 +68,17 @@ func GetProduct() gin.HandlerFunc {
 		}
 		for result.Next() {
 			var product models.Product
-			var imageProduct []models.Image
 			var idCategory int
 			err := result.Scan(&product.ProductId, &product.ProductName, &product.Rate, &product.Sold, &product.Quantity, &product.CurrentPrice, &product.LastPrice, &idCategory)
 			if err != nil {
 				ctx.JSON(500, gin.H{"error": err.Error()})
 				return
 			}
-			result1, err := database.Client.Query("SELECT productimage.url,productimage.description FROM productimage WHERE idProduct = ?", *product.ProductId)
+			product.ProductImages, err = GetImageProduct(*product.ProductId)
 			if err != nil {
 				ctx.JSON(500, gin.H{"error": err.Error()})
 				return
 			}
-			for result1.Next() {
-				var imageTemp models.Image
-				err := result1.Scan(&imageTemp.Url, &imageTemp.Description)
-				if err != nil {
-					ctx.JSON(500, gin.H{"error": err.Error()})
-					return
-				}
-				imageProduct = append(imageProduct, imageTemp)
-			}
-			product.ProductImages = imageProduct
 			products = append(products, product)
 		}
 		ctx.IndentedJSON(200, products)
