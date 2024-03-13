@@ -24,6 +24,21 @@ func GetImageProduct(idproduct int) (imageProduct []models.Image, err error) {
 	}
 	return imageProduct, nil
 }
+func GetTechnicalProduct(idproduct int) (productTechnical []models.Technical, err error) {
+	result, err := database.Client.Query("SELECT producttechnical.title,producttechnical.description FROM producttechnical WHERE idProduct = ?", idproduct)
+	if err != nil {
+		return nil, err
+	}
+	for result.Next() {
+		var technicalTemp models.Technical
+		err := result.Scan(&technicalTemp.Title, &technicalTemp.Description)
+		if err != nil {
+			return nil, err
+		}
+		productTechnical = append(productTechnical, technicalTemp)
+	}
+	return productTechnical, nil
+}
 
 func GetProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -51,7 +66,7 @@ func GetProduct() gin.HandlerFunc {
 				params = append(params, typeId)
 			}
 		}
-		
+
 		if sort == "ascending" {
 			query += "ORDER BY p.currentPrice ASC"
 		} else if sort == "descending" {
