@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -63,15 +64,18 @@ func Login() gin.HandlerFunc {
 			ctx.JSON(400, gin.H{"message": err.Error()})
 			return
 		}
+		fmt.Println(*user.Email)
 		err := database.Client.QueryRow("SELECT * FROM user WHERE email = ?", user.Email).Scan(
 			&founduser.Id,
 			&founduser.Email,
 			&founduser.First_Name,
 			&founduser.Last_Name,
 			&founduser.Password,
+			&founduser.PhoneNumber,
+			&founduser.Address,
 		)
 		if err != nil {
-			ctx.JSON(500, gin.H{"Message": "Email is not available"})
+			ctx.JSON(500, gin.H{"Message": "Email is not avilable"})
 			return
 		}
 		PasswordIsValid, msg := VerifyPassword(*user.Password, *founduser.Password)
