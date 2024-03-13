@@ -10,5 +10,6 @@ func main() {
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
 	routes.UserRoutes(router)
+	routes.ProductRoutes(router)
 	router.Run("0.0.0.0:8080")
 }
