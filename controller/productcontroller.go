@@ -169,3 +169,38 @@ func GetProductDetail() gin.HandlerFunc {
 		ctx.JSON(200, product)
 	}
 }
+func GetProductGroup() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var productGroups []models.Group
+		categoryId := ctx.Query("categoryId")
+		query := "SELECT productgroup.id,productgroup.title FROM productgroup WHERE productgroup.categoryId = " + categoryId
+		result, err := database.Client.Query(query)
+		if err != nil {
+			ctx.JSON(500, gin.H{"Error": err.Error()})
+			return
+		}
+		for result.Next() {
+			var productGroup models.Group
+			var types []models.Type
+			result.Scan(&productGroup.Id, &productGroup.Title)
+			result1, err := database.Client.Query("SELECT producttype.id,producttype.title,producttype.description FROM producttype WHERE idGroup = ?", productGroup.Id)
+			if err != nil {
+				ctx.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+			for result1.Next() {
+				var typeTemp models.Type
+				err := result1.Scan(&typeTemp.Id, &typeTemp.Title, &typeTemp.Description)
+				if err != nil {
+					ctx.JSON(200, gin.H{"Erorr": err.Error()})
+					return
+				}
+				types = append(types, typeTemp)
+			}
+
+			productGroup.Type = types
+			productGroups = append(productGroups, productGroup)
+		}
+		ctx.JSON(200, productGroups)
+	}
+}
