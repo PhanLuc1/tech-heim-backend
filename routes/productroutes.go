@@ -8,4 +8,5 @@ import (
 func ProductRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.GET("/product/", controller.GetProduct())
 	incomingRoutes.GET("/product/:id", controller.GetProductDetail())
+	incomingRoutes.GET("/productGroup", controller.GetProductGroup())
 }
